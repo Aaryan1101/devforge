@@ -1,0 +1,8 @@
+[2025-10-30 08:00:01] INFO: Application started successfully.
+[2025-10-30 08:00:15] INFO: User 'admin' logged in.
+[2025-10-30 08:01:03] WARN: Low memory detected in worker thread.
+[2025-10-30 08:01:40] INFO: Processing request ID: 1234.
+[2025-10-30 08:02:05] ERROR: Database connection failed. Retrying in 5s...
+[2025-10-30 08:02:10] ERROR: Unhandled exception in /api/data endpoint.
+[2025-10-30 08:02:11] INFO: Request ID: 1234 completed. Status: 500.
+[2025-10-30 08:03:00] INFO: System health check passed.

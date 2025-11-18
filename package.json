@@ -1,0 +1,79 @@
+{
+  "name": "devforge",
+  "displayName": "DevForge",
+  "description": "Minimal demo extension for DevForge features.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.105.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "devForgeAgent",
+          "title": "DevForge Agent",
+          "icon": "media/devforge.svg"
+        }
+      ]
+    },
+    "views": {
+      "devForgeAgent": [
+        {
+          "id": "devforgechatview",
+          "name": "Chat Interface",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "devforge.runSummary",
+        "title": "Run DevForge Summary"
+      },
+      {
+        "command": "devforge.runLogs",
+        "title": "Run DevForge Logs"
+      },
+      {
+        "command": "devforge.runEnv",
+        "title": "Run DevForge Environment Setup"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.4",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "@types/vscode": "^1.105.0",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.34.0",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.2",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "axios": "^1.13.1"
+  }
+}
