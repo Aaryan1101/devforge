@@ -44,6 +44,14 @@
       {
         "command": "devforge.runEnv",
         "title": "Run DevForge Environment Setup"
+      },
+      {
+        "command": "devforge.runTests",
+        "title": "Run DevForge Test Generation"
+      },
+      {
+        "command": "devforge.runFlow",
+        "title": "Run DevForge Flow Analysis"
       }
     ]
   },

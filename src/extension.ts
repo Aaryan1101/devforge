@@ -5,16 +5,23 @@ import * as path from 'path';
 import axios from 'axios'; 
 
 // N8N Webhook URL - ALL requests now go to this single endpoint
-// NOTE: This must point to the webhook URL of the multi-function N8N workflow.
-const N8N_WEBHOOK_URL = 'https://potatotest.app.n8n.cloud/webhook-test/devforge-analysis'; 
+const N8N_WEBHOOK_URL = 'https://clownsbeta.app.n8n.cloud/webhook/devforge-analysis'; // YOUR URL
 
 // --- FLOW ANALYSIS CONFIGURATION ---
-// File patterns the /flow command will look for:
+// FIX: Using only simple wildcards and specific extensions to avoid the "unexpected alternate groups" error.
 const FLOW_FILE_PATTERNS = [
-    '**/src/*{.js,.ts,.jsx,.tsx}', 
-    '**/package.json',
-    '**/index{.js,.ts,.jsx,.tsx}',
-    '**/server{.js,.ts}'
+    '**/package.json', 
+    '**/*.html', // Now includes all HTML files
+    '**/index.js',      
+    '**/index.ts',      
+    '**/index.jsx',      
+    '**/index.tsx',      
+    '**/server.js',     
+    '**/server.ts',     
+    '**/src/**/*.js',  
+    '**/src/**/*.ts',  
+    '**/src/**/*.jsx', 
+    '**/src/**/*.tsx'  
 ];
 const MAX_CONTEXT_FILES = 8; // Max files to read for project flow analysis
 
@@ -23,7 +30,6 @@ export function activate(context: vscode.ExtensionContext) {
 
     console.log('DevForge Agent extension is now active!');
 
-    // Initialize the Chat Provider
     const chatProvider = new DevForgeChatProvider(context.extensionUri);
 
     context.subscriptions.push(
@@ -177,8 +183,11 @@ export function activate(context: vscode.ExtensionContext) {
         try {
             vscode.window.showInformationMessage(`[DevForge] Analyzing project flow across multiple files...`);
 
-            // --- STEP 1: ASYNCHRONOUSLY FIND FILES ---
-            const fileUris = await vscode.workspace.findFiles(`{${FLOW_FILE_PATTERNS.join(',')}}`, '**/node_modules/**', MAX_CONTEXT_FILES);
+            // --- STEP 1: ASYNCHRONOUSLY FIND FILES (FIXED GLOBBING) ---
+            // FIX: Use the stable, simplified pattern array joined by a comma, 
+            // enclosed in a single pair of braces for the findFiles API.
+            const globPattern = `{${FLOW_FILE_PATTERNS.join(',')}}`;
+            const fileUris = await vscode.workspace.findFiles(globPattern, '**/node_modules/**', MAX_CONTEXT_FILES);
             
             if (fileUris.length === 0) {
                  chatProvider.postMessageToWebview({ command: 'addMessage', text: `[DevForge] Could not find relevant source files in the project.` });
@@ -197,7 +206,7 @@ export function activate(context: vscode.ExtensionContext) {
             // --- STEP 3: SEND TO AI AGENT (TASK: flow_analysis) ---
             vscode.window.showInformationMessage(`[DevForge] Sending ${fileUris.length} files to AI for flow mapping...`);
             
-            const response = await axios.post(N8N_WEBHOOK_URL, { // Use the main webhook
+            const response = await axios.post(N8N_WEBHOOK_URL, { 
                 project_context: contextString, // Send the large concatenated string
                 task: 'flow_analysis',         // Identifies the new task for n8n Router
                 root_path: path.basename(workspaceRoot)
